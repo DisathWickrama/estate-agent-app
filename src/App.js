@@ -5,6 +5,53 @@ import Favourites from "./components/Favourites";
 import propertiesData from "./data/properties.json";
 import { Routes, Route } from "react-router-dom";
 import PropertyPage from "./components/PropertyPage";
+import styled, { createGlobalStyle } from "styled-components";
+
+// ==== Global styles ====
+const GlobalStyle = createGlobalStyle`
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f5f5f5;
+    color: #333;
+  }
+
+  h1, h2, h3, h4 {
+    margin: 0.5em 0;
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  button {
+    font-family: inherit;
+  }
+`;
+
+// ==== App layout ====
+const AppContainer = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+`;
+
+const Header = styled.h1`
+  text-align: center;
+  color: #1890ff;
+  margin-bottom: 20px;
+`;
+
+const HomeLayout = styled.div`
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 20px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: 1fr;
+  }
+`;
 
 function App() {
   const [filters, setFilters] = useState({
@@ -44,23 +91,30 @@ function App() {
     setFavourites((prev) => prev.filter((p) => p.id !== id));
   };
 
+  const clearFavourites = () => setFavourites([]);
+
   return (
-    <div>
-      <h1>Estate Agent App</h1>
+    <AppContainer>
+      <GlobalStyle />
+      <Header>Estate Agent App</Header>
 
       <Routes>
         <Route
           path="/"
           element={
-            <>
-              <SearchBar filters={filters} setFilters={setFilters} />
-              <PropertyList properties={filteredProperties} addToFavourites={addToFavourites} />
+            <HomeLayout>
+              <div>
+                <SearchBar filters={filters} setFilters={setFilters} />
+                <PropertyList properties={filteredProperties} addToFavourites={addToFavourites} />
+              </div>
+
               <Favourites
                 favourites={favourites}
                 removeFromFavourites={removeFromFavourites}
                 addToFavourites={addToFavourites}
+                clearFavourites={clearFavourites}
               />
-            </>
+            </HomeLayout>
           }
         />
         <Route
@@ -68,7 +122,7 @@ function App() {
           element={<PropertyPage properties={propertiesData.properties} />}
         />
       </Routes>
-    </div>
+    </AppContainer>
   );
 }
 
